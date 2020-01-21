@@ -1,0 +1,62 @@
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
+import cucumber.api.java.en.And;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.remote.AndroidMobileCapabilityType;
+import io.appium.java_client.remote.MobileCapabilityType;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.CapabilityType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import static org.junit.Assert.assertEquals;
+/**
+* Created by akaygorodova@issart.com on 03.02.2019.
+*/
+public class MainActivitySteps {
+private Logger logger;
+private AndroidDriver driver;
+private String text;
+public MainActivitySteps() {
+logger = LoggerFactory.getLogger(MainActivitySteps.class);
+}
+@When(“^I launch my app$”)
+public void iLaunchMyApp() throws Throwable {
+DesiredCapabilities caps = new DesiredCapabilities();
+caps.setCapability(MobileCapabilityType.PLATFORM_NAME, “Android”);
+caps.setCapability(MobileCapabilityType.DEVICE_NAME, “My device”);
+caps.setCapability(
+AndroidMobileCapabilityType.APP_PACKAGE,
+“com.example.tester.myapplication”
+);
+caps.setCapability(
+AndroidMobileCapabilityType.APP_ACTIVITY,
+“.MainActivity”
+);
+caps.setCapability(CapabilityType.VERSION, “1.1”);
+driver = new AndroidDriver(new URL(“http://127.0.0.1:4723/wd/hub”), caps);
+driver.manage().timeouts().implicitlyWait(60, TimeUnit.SECONDS);
+}
+@And(“^Save text before$”)
+public void readLabelTest() {
+WebElement element = driver.findElement(By.id(“label”));
+text = element.getAttribute(“text”);
+logger.debug(“label/test: {}”, text);
+assertEquals(text, “Hello World!”);
+}
+@And(“^I click the button$”)
+public void iClickTheButton() {
+driver.findElement(By.id(“fab”)).click();
+logger.debug(“fab/click”);
+}
+@Then(“^I see something$”)
+public void iSeeSomething() {
+WebElement element = driver.findElement(By.id(“label”));
+String actual = element.getAttribute(“text”);
+logger.debug(“label/test: {}”, actual);
+assertEquals(actual, text + “+”);
+}
+}
