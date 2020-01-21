@@ -1,0 +1,44 @@
+using System;
+using NUnit.Framework;
+using OpenQA.Selenium.Appium;
+using OpenQA.Selenium.Appium.Android;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Remote;
+namespace Test_Selenium
+{
+[TestFixture]
+class AndroidDemoTest
+{
+protected static readonly String ACCESS_KEY = Environment.GetEnvironmentVariable(“SEETEST_IO_ACCESS_KEY”);
+protected static readonly String CLOUD_URL = “https://cloud.seetest.io:443/wd/hub”;
+protected static readonly String TITLE = “Selenium/Appium Android test”;
+protected DesiredCapabilities dc = new DesiredCapabilities();
+private AppiumDriver driver;
+protected String testName = “Selenium/Appium Android test”;
+[SetUp]
+public void Initialize()
+{
+dc.SetCapability(“platformName”, “Android”);
+dc.SetCapability(“app”, “com.example.tester.myapplication”);
+dc.SetCapability(“appActivity”, “.MainActivity”);
+dc.SetCapability(“appVersion”, “1.0”);
+dc.SetCapability(“accessKey”, ACCESS_KEY);
+driver = new AndroidDriver(new Uri(CLOUD_URL), dc);
+}
+[Test]
+public void AndroidNativeAppTestExample()
+{
+driver.FindElement(By.Id(“fab”)).Click();
+String text = driver.FindElement(By.XPath(“//*[@text=’Hello World!’]”)).GetAttribute(“text”);
+Assert.AreEqual(text, “Hello World!”);
+}
+[TearDown]
+public void TearDown()
+{
+if (driver != null)
+{
+driver.Quit();
+}
+}
+}
+}
