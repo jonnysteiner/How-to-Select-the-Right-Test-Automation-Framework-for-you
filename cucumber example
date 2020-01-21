@@ -1,0 +1,6 @@
+Feature: Hello World.
+Scenario: Click the button in my app
+When I launch my app
+And Save text before
+And I click the button
+Then I see something
